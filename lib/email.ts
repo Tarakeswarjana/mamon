@@ -97,6 +97,17 @@ ${message}
   });
 }
 
+export async function sendHugNotification() {
+  await sendMail({
+    subject: "🫂 Mamon asked for a hug",
+    text: `${GIRLFRIEND_NAME} held for a hug on the little website.
+
+She wants you close. Call her, text her, or go to her if you can. ❤️
+
+— ${BOYFRIEND_NAME}`,
+  });
+}
+
 export async function sendNeedYouNotification() {
   await sendMail({
     subject: "🚨 Boyfriend Summoned ❤️",

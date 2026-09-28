@@ -1,5 +1,7 @@
 "use client";
 
+import { GIRLFRIEND_NAME, HUG_CLIENT_COOLDOWN_MS, STORAGE_KEYS } from "@/lib/constants";
+import { canSend, markSent, openSystemMail } from "@/lib/client";
 import { motion, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
 
@@ -54,6 +56,7 @@ export function VirtualHug() {
     if (next >= 100) {
       setDelivered(true);
       stopHold();
+      notifyHug();
       return;
     }
 
@@ -66,6 +69,18 @@ export function VirtualHug() {
     }
     stopHold();
     frame.current = requestAnimationFrame(tick);
+  }
+
+  function notifyHug() {
+    if (!canSend(STORAGE_KEYS.hugLastSent, HUG_CLIENT_COOLDOWN_MS)) {
+      return;
+    }
+
+    markSent(STORAGE_KEYS.hugLastSent);
+    openSystemMail(
+      "🫂 Mamon asked for a hug",
+      `${GIRLFRIEND_NAME} held for a hug on the little website.\n\nShe wants you close. Call her, text her, or go to her if you can. ❤️`,
+    );
   }
 
   return (

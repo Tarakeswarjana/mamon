@@ -1,22 +1,9 @@
 "use client";
 
-import { createSessionId, markVisitSent, postJson, visitAllowed } from "@/lib/client";
-import { useEffect } from "react";
-
+/**
+ * Visit emails need SMTP. Without a password we skip silent visit alerts
+ * so we never pop open the mail app on page load.
+ */
 export function VisitTracker() {
-  useEffect(() => {
-    if (!visitAllowed()) {
-      return;
-    }
-
-    const sessionId = createSessionId();
-
-    void postJson("/api/visit", { sessionId }).then((result) => {
-      if (result.success) {
-        markVisitSent(sessionId);
-      }
-    });
-  }, []);
-
   return null;
 }

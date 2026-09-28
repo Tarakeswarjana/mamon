@@ -59,9 +59,9 @@ export function PrivacyModal({ open, onClose }: PrivacyModalProps) {
         </h2>
         <div className="mt-4 space-y-4 leading-relaxed text-ink">
           <p>
-            This website can notify {BOYFRIEND_NAME} when you interact with
-            certain features, like opening it, asking for food, sharing how
-            you feel, or pressing “I just want you”.
+            Some buttons can open your phone&apos;s mail app with a ready note
+            for {BOYFRIEND_NAME} — food, hug, feelings, or “I just want you”.
+            You only send it if you press Send.
           </p>
           <p>Your location is never collected.</p>
           <p className="text-muted">

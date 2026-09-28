@@ -1,5 +1,6 @@
 import {
   NEED_YOU_CLIENT_COOLDOWN_MS,
+  NOTIFICATION_EMAIL,
   STORAGE_KEYS,
   VISIT_COOLDOWN_MS,
   WISHLIST_CLIENT_COOLDOWN_MS,
@@ -27,6 +28,12 @@ export async function postJson(path: string, body: unknown): Promise<ApiResponse
   } catch {
     return { success: false, message: "Unable to process request" };
   }
+}
+
+/** Opens the phone/computer mail app with a ready email. No SMTP password needed. */
+export function openSystemMail(subject: string, body: string) {
+  const href = `mailto:${NOTIFICATION_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = href;
 }
 
 function readNumber(key: string) {

@@ -19,7 +19,12 @@ export const feelingSchema = z.object({
   timestamp: z.string().min(1).max(80),
 });
 
+export const hugSchema = z.object({
+  timestamp: z.string().min(1).max(80),
+});
+
 export type VisitPayload = z.infer<typeof visitSchema>;
 export type WishlistPayload = z.infer<typeof wishlistSchema>;
 export type NeedYouPayload = z.infer<typeof needYouSchema>;
 export type FeelingPayload = z.infer<typeof feelingSchema>;
+export type HugPayload = z.infer<typeof hugSchema>;

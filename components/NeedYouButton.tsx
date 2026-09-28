@@ -1,7 +1,7 @@
 "use client";
 
 import { NEED_YOU_CLIENT_COOLDOWN_MS, STORAGE_KEYS } from "@/lib/constants";
-import { canSend, markSent, postJson } from "@/lib/client";
+import { canSend, markSent, openSystemMail } from "@/lib/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 
@@ -11,24 +11,19 @@ export function NeedYouButton() {
     "idle",
   );
 
-  async function summon() {
+  function summon() {
     if (!canSend(STORAGE_KEYS.needYouLastSent, NEED_YOU_CLIENT_COOLDOWN_MS)) {
       setStatus("sent");
       return;
     }
 
     setStatus("sending");
-    const result = await postJson("/api/need-you", {
-      timestamp: new Date().toISOString(),
-    });
-
-    if (result.success) {
-      markSent(STORAGE_KEYS.needYouLastSent);
-      setStatus("sent");
-      return;
-    }
-
-    setStatus("error");
+    markSent(STORAGE_KEYS.needYouLastSent);
+    openSystemMail(
+      "🚨 Boyfriend Summoned ❤️",
+      "Drop whatever you're doing.\n\nShe wants you. ❤️",
+    );
+    setStatus("sent");
   }
 
   return (
@@ -65,11 +60,6 @@ export function NeedYouButton() {
               Boyfriend has officially been summoned. 🚨❤️
             </span>
           </motion.p>
-        ) : null}
-        {status === "error" ? (
-          <p role="status" className="mt-4 text-center text-sm text-muted">
-            I couldn&apos;t send that just now. Try again in a little while.
-          </p>
         ) : null}
       </AnimatePresence>
     </motion.section>

@@ -1,26 +1,133 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff8f7;
+  --secondary: #fff0f1;
+  --rose: #efa3ac;
+  --deep-rose: #c96a79;
+  --lavender: #d9c7e8;
+  --cream: #fff5e9;
+  --ink: #49383b;
+  --muted: #8d777b;
+  --white: #ffffff;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-secondary: var(--secondary);
+  --color-rose: var(--rose);
+  --color-deep-rose: var(--deep-rose);
+  --color-lavender: var(--lavender);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-white: var(--white);
+  --font-sans: var(--font-nunito), var(--font-bengali);
+  --font-display: var(--font-cormorant), var(--font-bengali);
+  --font-hand: var(--font-caveat), var(--font-bengali);
+  --shadow-soft: 0 16px 40px rgba(201, 106, 121, 0.1);
+  --shadow-lift: 0 20px 50px rgba(73, 56, 59, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: only light;
+  background: var(--background);
+}
+
+html,
+body {
+  min-height: 100%;
+  min-height: 100dvh;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(1200px 700px at 10% -10%, rgba(217, 199, 232, 0.45), transparent 55%),
+    radial-gradient(900px 600px at 110% 8%, rgba(239, 163, 172, 0.28), transparent 50%),
+    radial-gradient(800px 500px at 50% 120%, rgba(255, 245, 233, 0.9), transparent 55%),
+    var(--background);
+  color: var(--ink);
+  font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(239, 163, 172, 0.45);
+  color: var(--ink);
+}
+
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.paper {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(201, 106, 121, 0.05) 28px
+    ),
+    var(--cream);
+}
+
+.safe-pad {
+  padding-top: calc(var(--safe-top) + 1.25rem);
+  padding-bottom: calc(var(--safe-bottom) + 2rem);
+  padding-left: calc(var(--safe-left) + 1.25rem);
+  padding-right: calc(var(--safe-right) + 1.25rem);
+}
+
+.petal {
+  position: absolute;
+  width: 14px;
+  height: 20px;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--rose));
+  border-radius: 70% 70% 70% 70% / 80% 80% 40% 40%;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes float-y {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(0, -24px, 0) rotate(8deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(18px, 110vh, 0) rotate(40deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-slow,
+  .petal-fall {
+    animation: none !important;
+  }
 }

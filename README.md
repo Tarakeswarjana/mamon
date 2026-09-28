@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# A Little Care For You ❤️
 
-## Getting Started
+A private Next.js website. A small, quiet corner of the internet for one person — not a period tracker, not a medical app, not a product.
 
-First, run the development server:
+It is meant to feel like a digital gift: warm, unhurried, and made by hand.
+
+## Installation
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+That is the only command you need for local development.
+
+## Environment variables
+
+Copy `.env.example` to `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+| Variable | Where it runs | Purpose |
+| --- | --- | --- |
+| `SMTP_HOST` | Server only | SMTP hostname, e.g. `smtp.gmail.com` |
+| `SMTP_PORT` | Server only | `465` (SSL) or `587` (STARTTLS) |
+| `SMTP_USER` | Server only | SMTP username, usually your Gmail address |
+| `SMTP_PASS` | Server only | SMTP password or Gmail App Password |
+| `NOTIFICATION_EMAIL` | Server only | Inbox that receives the care alerts |
+| `SMTP_FROM` | Server only, optional | From address. Defaults to `SMTP_USER` |
+| `NEXT_PUBLIC_GIRLFRIEND_NAME` | Browser-safe | The name shown in the greeting and letter |
+| `UPSTASH_REDIS_REST_URL` | Server only, optional | Production rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Server only, optional | Production rate limiting |
+
+Never put `SMTP_USER`, `SMTP_PASS`, or `NOTIFICATION_EMAIL` in client code. Only Route Handlers in `app/api` may send mail.
+
+If SMTP is missing, local development still runs. Emails are printed to the terminal instead of being sent. In production, unconfigured email fails closed with a generic error.
+
+## SMTP setup (Gmail)
+
+1. Use a Google account with 2-Step Verification enabled.
+2. Open [Google App Passwords](https://myaccount.google.com/apppasswords).
+3. Create an app password for “Mail”.
+4. Put these values in `.env.local` and in Vercel:
+
+```text
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=you@gmail.com
+SMTP_PASS=xxxx xxxx xxxx xxxx
+NOTIFICATION_EMAIL=you@gmail.com
+```
+
+Gmail may reject sign-in from less secure apps. An App Password is the reliable path.
+
+Other providers work the same way: host, port, user, pass, destination inbox.
+
+## Local development
+
+1. Install dependencies with `npm install`.
+2. Add `.env.local`.
+3. Run `npm run dev`.
+4. Keep the terminal open. Visit, wishlist, and “I need you” actions log there until SMTP is configured.
+
+Useful scripts:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Vercel deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is App Router + Route Handlers only. It is meant to deploy to Vercel as a single Next.js app.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push the project to GitHub.
+2. Import the repository in [Vercel](https://vercel.com/new).
+3. Add the environment variables from the table above.
+4. Deploy.
 
-## Learn More
+No Express server. No Docker. No separate frontend. No cron jobs. No WebSockets.
 
-To learn more about Next.js, take a look at the following resources:
+After deploy, open the production URL on your phone and add it to the home screen if you want it to feel like a little app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Optional Redis
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Vercel serverless instances do not share memory. The included rate limiter still works without Redis (and is enough for a private site). If you want limits to persist across instances later, create a free [Upstash Redis](https://upstash.com/) rest database and set:
 
-## Deploy on Vercel
+```text
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app does not require Redis to run.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Customization
+
+### Her name
+
+Set `NEXT_PUBLIC_GIRLFRIEND_NAME` in `.env.local` and Vercel.
+
+The fallback lives in `lib/constants.ts`.
+
+### His name
+
+Change `BOYFRIEND_NAME` in `lib/constants.ts`.
+
+### Messages
+
+All copy lives in `lib/messages.ts`:
+
+- mood replies
+- comfort messages (20+)
+- love notes (25+)
+- the secret letter
+- breathing line
+
+Change the arrays. The UI picks them up.
+
+### Colors
+
+The palette is in `app/globals.css` under `:root`.
+
+```text
+Background: #FFF8F7
+Secondary: #FFF0F1
+Rose: #EFA3AC
+Deep Rose: #C96A79
+Lavender: #D9C7E8
+Cream: #FFF5E9
+Text: #49383B
+Muted Text: #8D777B
+```
+
+### Email
+
+`lib/email.ts` owns the notifications:
+
+- `sendVisitNotification`
+- `sendWishlistNotification`
+- `sendNeedYouNotification`
+
+### Adding a new surprise food
+
+1. Add it to `FOOD_OPTIONS` in `lib/constants.ts`.
+2. Add a matching line in `sendWishlistNotification` if you want a custom emoji in the email.
+
+## Privacy
+
+The site can notify you when she:
+
+- opens it (once per session, with a cooldown)
+- asks for a food
+- presses **I just want you**
+
+There is no hidden tracking, no fingerprinting, and no third-party analytics.
+
+## Project shape
+
+```text
+app/           pages, metadata, Route Handlers
+components/    the experience
+lib/           messages, email, validation, rate limiting
+public/        PWA icons and the service worker
+```
